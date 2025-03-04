@@ -21,7 +21,7 @@
     "java": ">=21",
     "fabric-api": "*",
     "malilib": ">=0.23.1",
-    "litematica": "0.21.1"
+    "litematica": ">=0.21.1"
   },
   "suggests": {
     "another-mod": "*"
