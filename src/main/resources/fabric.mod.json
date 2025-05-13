@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "firesight",
-  "version": "${version}",
+  "version": "1.1-1.21.4",
   "name": "Firesight",
   "description": "A mod that visually indicates possible fire spread.",
   "authors": ["Hekker"],
@@ -12,7 +12,9 @@
   "icon": "assets/firesight/icon.png",
   "environment": "client",
   "entrypoints": {
-    "client": ["com.hekker.firesight.FiresightClient"]
+    "client": [
+      "com.hekker.firesight.Firesight"
+    ]
   },
   "mixins": ["firesight.mixins.json"],
   "depends": {

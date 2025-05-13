@@ -1,6 +1,7 @@
 package com.hekker.firesight.mixin;
 
-import com.hekker.firesight.FiresightClient;
+import com.hekker.firesight.Firesight;
+import com.hekker.firesight.config.Configs;
 import com.hekker.firesight.FiresightLitematicaIntegration;
 import fi.dy.masa.malilib.util.Color4f;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -9,6 +10,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import org.joml.Matrix4f;
@@ -16,7 +18,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import net.minecraft.client.render.WorldRenderer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,22 +41,23 @@ public class WorldRendererMixin {
             }
             flammabilityInitialized = true;
         } catch (Exception e) {
-            FiresightClient.LOGGER.error("Failed to access burnChances using Mixin Accessor: " + e.getMessage());
+            Firesight.logger.error("Failed to access burnChances using Mixin Accessor: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
     @Inject(method = "renderLayer", at = @At("TAIL"))
     private void onRenderLayer(RenderLayer renderLayer, double x, double y, double z, Matrix4f viewMatrix, Matrix4f posMatrix, CallbackInfo ci) {
+        if (!Configs.Generic.FIRESIGHT_RENDERING.getBooleanValue()) return;
         if (renderLayer == RenderLayer.getTranslucent()) {
             initializeFlammabilityData();
 
             BlockPos playerPos = MinecraftClient.getInstance().player.getBlockPos();
-            int radius = 10; // Define the radius around the player
+            int radius = Configs.Generic.SCAN_RANGE.getIntegerValue();
+            Color4f highlight = Configs.Generic.VISUAL_COLOR.getColor();
             List<BlockPos> dangerZonePositions = new ArrayList<>();
             List<BlockPos> flammableDangerPositions = new ArrayList<>();
 
-            // Identify danger zones and blocks that are in the danger zone and adjacent to flammable blocks
             for (int dx = -radius; dx <= radius; dx++) {
                 for (int dy = -radius; dy <= radius; dy++) {
                     for (int dz = -radius; dz <= radius; dz++) {
@@ -63,7 +65,6 @@ public class WorldRendererMixin {
                         BlockState state = MinecraftClient.getInstance().world.getBlockState(pos);
                         Block block = state.getBlock();
 
-                        // Collect danger zone from fire and lava blocks
                         if (block == Blocks.FIRE || block == Blocks.LAVA) {
                             dangerZonePositions.addAll(getDangerZoneForBlock(pos, block));
                         }
@@ -71,7 +72,6 @@ public class WorldRendererMixin {
                 }
             }
 
-            // Check for flammable adjacency in the danger zone
             for (BlockPos dangerPos : dangerZonePositions) {
                 if (MinecraftClient.getInstance().world.getBlockState(dangerPos).isAir()) {
                     for (Direction direction : Direction.values()) {
@@ -86,9 +86,7 @@ public class WorldRendererMixin {
                 }
             }
 
-            // Render only the flammable danger zone blocks in yellow
-            Color4f flammableDangerColor = new Color4f(1.0f, 0.5f, 0.0f, 0.5f); // Semi-transparent yellow
-            FiresightLitematicaIntegration.renderBlocksWithLitematica(posMatrix, flammableDangerPositions, flammableDangerColor);
+            FiresightLitematicaIntegration.renderBlocksWithLitematica(posMatrix, flammableDangerPositions, highlight);
         }
     }
 
@@ -96,7 +94,6 @@ public class WorldRendererMixin {
         List<BlockPos> dangerZone = new ArrayList<>();
 
         if (block == Blocks.FIRE) {
-            // Fire spread danger zone
             for (int dx = -1; dx <= 1; dx++) {
                 for (int dz = -1; dz <= 1; dz++) {
                     for (int dy = -1; dy <= 4; dy++) {
@@ -105,15 +102,14 @@ public class WorldRendererMixin {
                 }
             }
         } else if (block == Blocks.LAVA) {
-            // Lava spread danger zone
             for (int dx = -1; dx <= 1; dx++) {
                 for (int dz = -1; dz <= 1; dz++) {
-                    dangerZone.add(sourcePos.add(dx, 1, dz)); // 3x1x3 directly above
+                    dangerZone.add(sourcePos.add(dx, 1, dz));
                 }
             }
             for (int dx = -2; dx <= 2; dx++) {
                 for (int dz = -2; dz <= 2; dz++) {
-                    dangerZone.add(sourcePos.add(dx, 2, dz)); // 5x1x5 two blocks above
+                    dangerZone.add(sourcePos.add(dx, 2, dz));
                 }
             }
         }
