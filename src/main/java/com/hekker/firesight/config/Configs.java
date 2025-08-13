@@ -12,7 +12,8 @@ import fi.dy.masa.malilib.config.options.ConfigColor;      // ← NEW
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class Configs implements IConfigHandler
 {
@@ -20,10 +21,13 @@ public class Configs implements IConfigHandler
 
     public static void loadFromFile()
     {
-        File file = new File(FileUtils.getConfigDirectory(), CONFIG_FILE_NAME);
-        if (file.exists() && file.isFile() && file.canRead())
+        Path configFile = FileUtils.getConfigDirectoryAsPath().resolve(CONFIG_FILE_NAME);
+
+        if (Files.isRegularFile(configFile) && Files.isReadable(configFile))
         {
-            JsonElement el = JsonUtils.parseJsonFile(file);
+            JsonElement el = JsonUtils.parseJsonFileAsPath(configFile); // Litematica style
+            // If your JsonUtils lacks *AsPath*: el = JsonUtils.parseJsonFile(configFile.toFile());
+
             if (el != null && el.isJsonObject())
             {
                 JsonObject root = el.getAsJsonObject();
@@ -35,15 +39,22 @@ public class Configs implements IConfigHandler
 
     public static void saveToFile()
     {
-        File dir = FileUtils.getConfigDirectory();
-        if ((dir.exists() && dir.isDirectory()) || dir.mkdirs())
-        {
-            JsonObject root = new JsonObject();
-            ConfigUtils.writeConfigBase(root, "Generic", Generic.OPTIONS);
-            ConfigUtils.writeConfigBase(root, "Hotkeys", Hotkeys.HOTKEY_LIST);
-            JsonUtils.writeJsonToFile(root, new File(dir, CONFIG_FILE_NAME));
+        Path dir = FileUtils.getConfigDirectoryAsPath();
+        if (!FileUtils.createDirectoriesIfMissing(dir)) {
+            return;
         }
+
+        Path configFile = dir.resolve(CONFIG_FILE_NAME);
+
+        JsonObject root = new JsonObject();
+        ConfigUtils.writeConfigBase(root, "Generic", Generic.OPTIONS);
+        ConfigUtils.writeConfigBase(root, "Hotkeys", Hotkeys.HOTKEY_LIST);
+
+        // If you have a Path version, prefer it:
+        // JsonUtils.writeJsonToFileAsPath(root, configFile);
+        JsonUtils.writeJsonToFile(root, configFile.toFile());
     }
+
 
     @Override public void load() { loadFromFile(); }
     @Override public void save() { saveToFile(); }
@@ -60,17 +71,16 @@ public class Configs implements IConfigHandler
 
         static
         {
-            FIRESIGHT_RENDERING = (ConfigBoolean) new ConfigBoolean("firesightRendering", false)
+            FIRESIGHT_RENDERING = new ConfigBoolean("firesightRendering", false)
                     .apply("firesight.config.generic");
 
-            DEBUG_LOGGING = (ConfigBoolean) new ConfigBoolean("debugLogging", false)
+            DEBUG_LOGGING = new ConfigBoolean("debugLogging", false)
                     .apply("firesight.config.generic");
 
-            SCAN_RANGE = (ConfigInteger) new ConfigInteger("scanRange", 10, 1, 100)
+            SCAN_RANGE = new ConfigInteger("scanRange", 10, 1, 100)
                     .apply("firesight.config.generic");
 
-            // default = 50 % alpha, orange (#80FF8000 = AARRGGBB)
-            VISUAL_COLOR = (ConfigColor) new ConfigColor("visualColor", "#80FF8000")
+            VISUAL_COLOR = new ConfigColor("visualColor", "#80FF8000")
                     .apply("firesight.config.generic");
 
             OPTIONS = ImmutableList.of(
