@@ -1,6 +1,6 @@
 # Firesight Mod
 
-Firesight is a Minecraft Fabric mod that provides visualization to help players understand fire spread mechanics in Minecraft. It uses Litematica and MaLiLib and offers real-time block highlighting to show where fire can spread.
+Firesight is a Minecraft Fabric mod that provides visualization to help players understand fire spread mechanics in Minecraft. It uses MaLiLib and offers real-time block highlighting to show where fire can spread.
 
 An air block will be highlighed if fire can spread to it. This works in a radius around the player that can be configured. Setting it to a high number does impact frames.
 ![Visualiation](images/viz.png)
