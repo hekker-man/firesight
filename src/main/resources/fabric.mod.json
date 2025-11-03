@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "firesight",
-  "version": "1.2-1.21.8",
+  "version": "1.3-1.21.10",
   "name": "Firesight",
   "description": "A mod that visually indicates possible fire spread.",
   "authors": ["Hekker"],
@@ -19,10 +19,10 @@
   "mixins": ["firesight.mixins.json"],
   "depends": {
     "fabricloader": ">=0.17.2",
-    "minecraft": "~1.21.8",
+    "minecraft": "~1.21.10",
     "java": ">=21",
     "fabric-api": "*",
-    "malilib": ">=0.25.4"
+    "malilib": ">=0.26.2"
   },
   "suggests": {
     "another-mod": "*"

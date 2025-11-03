@@ -59,6 +59,7 @@ public class WorldRendererMixin {
             boolean renderBlockOutline,
             Camera camera,
             Matrix4f positionMatrix,
+            Matrix4f matrix4f,
             Matrix4f projectionMatrix,
             GpuBufferSlice fog,
             Vector4f fogColor,

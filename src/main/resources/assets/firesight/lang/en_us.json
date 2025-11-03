@@ -1,0 +1,11 @@
+{
+  "firesight.gui.title.configs": "Firesight configuration",
+
+  "firesight.config.generic.name.firesightRendering": "Enable Firesight rendering",
+  "firesight.config.generic.name.debugLogging": "Enable debug logging",
+  "firesight.config.generic.name.scanRange": "Scan range",
+  "firesight.config.generic.name.visualColor": "Visual color",
+
+  "firesight.config.hotkeys.name.renderingToggle": "Toggle rendering",
+  "firesight.config.hotkeys.name.openConfigGui": "Open configuration menu"
+}
