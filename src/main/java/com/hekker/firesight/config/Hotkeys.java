@@ -15,11 +15,19 @@ public class Hotkeys
 
     static
     {
-        RENDERING_TOGGLE = (ConfigHotkey) new ConfigHotkey("renderingToggle", "F8")
-                .apply(HOTKEYS_KEY);
+        RENDERING_TOGGLE = (ConfigHotkey) new ConfigHotkey(
+                "renderingToggle",
+                "F8",
+                "Toggle Firesight rendering",
+                "firesight.config.hotkeys.renderingToggle"
+        );
 
-        OPEN_CONFIG_GUI = (ConfigHotkey) new ConfigHotkey("openConfigGui", "M,F8")
-                .apply(HOTKEYS_KEY);
+        OPEN_CONFIG_GUI = (ConfigHotkey) new ConfigHotkey(
+                "openConfigGui",
+                "M,F8",
+                "Open the Firesight config menu",
+                "firesight.config.hotkeys.openConfigGui"
+        );
 
         HOTKEY_LIST = ImmutableList.of(
                 RENDERING_TOGGLE,

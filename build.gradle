@@ -29,7 +29,7 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	// Import MaLiLib
-	modImplementation files('libs/malilib-fabric-1.21.10-rc1-0.26.2.jar')
+	modImplementation files('libs/malilib-fabric-1.21.1-0.21.0.jar')
 
 	processResources {
 		inputs.property "version", project.version

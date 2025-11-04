@@ -1,37 +1,43 @@
 package com.hekker.firesight;
 
-import fi.dy.masa.malilib.render.MaLiLibPipelines;
-import fi.dy.masa.malilib.render.RenderContext;
+import com.mojang.blaze3d.systems.RenderSystem;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.util.data.Color4f;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BuiltBuffer;
+import fi.dy.masa.malilib.util.Color4f;
+import net.minecraft.client.render.*;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.List;
 
-
 public class FiresightMaLiLibIntegration {
 
     public static void renderBlocksWithMaLiLib(List<BlockPos> positions, Color4f color) {
-        try (RenderContext ctx = new RenderContext(
-                () -> "firesight:overlay/fill",
-                MaLiLibPipelines.POSITION_COLOR_TRANSLUCENT_NO_DEPTH_NO_CULL)) {
+        if (positions == null || positions.isEmpty()) return;
 
-            BufferBuilder buffer = ctx.getBuilder();
+        try {
+            // Translucent overlay, depth test ON (no writes), no cull
+            RenderUtils.setupBlend();
+            RenderSystem.depthMask(false);
+            RenderSystem.disableCull();
+            RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+            RenderSystem.applyModelViewMatrix();
+
+            Tessellator tess = Tessellator.getInstance();
+            BufferBuilder buf = tess.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 
             for (BlockPos pos : positions) {
-                RenderUtils.renderAreaSidesBatched(pos, pos, color, 0.002, buffer);
+                // Slight expand to avoid z-fighting with block faces
+                RenderUtils.drawBlockBoundingBoxSidesBatchedQuads(pos, color, 0.002, buf);
             }
 
-            BuiltBuffer meshData = buffer.endNullable();
-            if (meshData != null) {
-                ctx.draw(meshData, false);
-                meshData.close();
-            }
-        }
-        catch (Exception e) {
-            Firesight.logger.error("Error rendering Firesight MaLiLib overlay", e);
+            BuiltBuffer built = buf.end();
+            BufferRenderer.drawWithGlobalProgram(built);
+            built.close();
+        } catch (Exception e) {
+            Firesight.logger.error("Error rendering Firesight overlay", e);
+        } finally {
+            RenderSystem.enableCull();
+            RenderSystem.depthMask(true);
+            RenderSystem.disableBlend();
         }
     }
 }

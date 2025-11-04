@@ -12,6 +12,7 @@ import fi.dy.masa.malilib.config.options.ConfigColor;      // ← NEW
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -21,12 +22,11 @@ public class Configs implements IConfigHandler
 
     public static void loadFromFile()
     {
-        Path configFile = FileUtils.getConfigDirectoryAsPath().resolve(CONFIG_FILE_NAME);
+        Path configFile = FileUtils.getConfigDirectory().toPath().resolve(CONFIG_FILE_NAME);
 
         if (Files.isRegularFile(configFile) && Files.isReadable(configFile))
         {
-            JsonElement el = JsonUtils.parseJsonFileAsPath(configFile); // Litematica style
-            // If your JsonUtils lacks *AsPath*: el = JsonUtils.parseJsonFile(configFile.toFile());
+            JsonElement el = JsonUtils.parseJsonFile(configFile.toFile());
 
             if (el != null && el.isJsonObject())
             {
@@ -39,8 +39,11 @@ public class Configs implements IConfigHandler
 
     public static void saveToFile()
     {
-        Path dir = FileUtils.getConfigDirectoryAsPath();
-        if (!FileUtils.createDirectoriesIfMissing(dir)) {
+        Path dir = FileUtils.getConfigDirectory().toPath();
+        try {
+            Files.createDirectories(dir);
+        } catch (IOException e) {
+            e.printStackTrace();
             return;
         }
 
@@ -71,17 +74,35 @@ public class Configs implements IConfigHandler
 
         static
         {
-            FIRESIGHT_RENDERING = new ConfigBoolean("firesightRendering", false)
-                    .apply("firesight.config.generic");
+            FIRESIGHT_RENDERING = new ConfigBoolean(
+                    "firesightRendering",
+                    false,
+                    "Toggle the Firesight overlay",
+                    "firesight.config.generic.name.firesightRendering"
+            );
 
-            DEBUG_LOGGING = new ConfigBoolean("debugLogging", false)
-                    .apply("firesight.config.generic");
+            DEBUG_LOGGING = new ConfigBoolean(
+                    "debugLogging",
+                    false,
+                    "Write extra debug info to the log",
+                    "firesight.config.generic.name.debugLogging"
+            );
 
-            SCAN_RANGE = new ConfigInteger("scanRange", 10, 1, 100)
-                    .apply("firesight.config.generic");
+            SCAN_RANGE = new ConfigInteger(
+                    "scanRange",
+                    10,
+                    1,
+                    100,
+                    "firesight.config.generic.comment.scanRange",
+                    "firesight.config.generic.name.scanRange"
+            );
 
-            VISUAL_COLOR = new ConfigColor("visualColor", "#80FF8000")
-                    .apply("firesight.config.generic");
+            VISUAL_COLOR = new ConfigColor(
+                    "visualColor",
+                    "#80FF8000",
+                    "firesight.config.generic.comment.visualColor",
+                    "firesight.config.generic.name.visualColor"
+            );
 
             OPTIONS = ImmutableList.of(
                     FIRESIGHT_RENDERING,
