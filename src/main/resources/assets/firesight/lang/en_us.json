@@ -2,10 +2,16 @@
   "firesight.gui.title.configs": "Firesight configuration",
 
   "firesight.config.generic.name.firesightRendering": "Enable Firesight rendering",
+  "firesight.config.generic.comment.firesightRendering": "Highlights nearby air blocks that could catch fire.",
   "firesight.config.generic.name.debugLogging": "Enable debug logging",
+  "firesight.config.generic.comment.debugLogging": "Prints verbose information to the log; useful when diagnosing issues.",
   "firesight.config.generic.name.scanRange": "Scan range",
+  "firesight.config.generic.comment.scanRange": "How far (in blocks) to search from the player for fire or lava.",
   "firesight.config.generic.name.visualColor": "Visual color",
+  "firesight.config.generic.comment.visualColor": "Color and alpha of the overlay boxes.",
 
   "firesight.config.hotkeys.name.renderingToggle": "Toggle rendering",
-  "firesight.config.hotkeys.name.openConfigGui": "Open configuration menu"
+  "firesight.config.hotkeys.comment.renderingToggle": "Turns the visual overlay on or off without opening the menu.",
+  "firesight.config.hotkeys.name.openConfigGui": "Open configuration menu",
+  "firesight.config.hotkeys.comment.openConfigGui": "Shows the Firesight settings screen."
 }
