@@ -8,9 +8,9 @@ import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.IConfigHandler;
 import fi.dy.masa.malilib.config.options.ConfigBoolean;
 import fi.dy.masa.malilib.config.options.ConfigInteger;
-import fi.dy.masa.malilib.config.options.ConfigColor;      // ← NEW
+import fi.dy.masa.malilib.config.options.ConfigColor;
 import fi.dy.masa.malilib.util.FileUtils;
-import fi.dy.masa.malilib.util.JsonUtils;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,12 +21,11 @@ public class Configs implements IConfigHandler
 
     public static void loadFromFile()
     {
-        Path configFile = FileUtils.getConfigDirectoryAsPath().resolve(CONFIG_FILE_NAME);
+        Path configFile = FileUtils.getConfigDirectory().resolve(CONFIG_FILE_NAME);
 
         if (Files.isRegularFile(configFile) && Files.isReadable(configFile))
         {
-            JsonElement el = JsonUtils.parseJsonFileAsPath(configFile); // Litematica style
-            // If your JsonUtils lacks *AsPath*: el = JsonUtils.parseJsonFile(configFile.toFile());
+            JsonElement el = JsonUtils.parseJsonFile(configFile);
 
             if (el != null && el.isJsonObject())
             {
@@ -39,7 +38,7 @@ public class Configs implements IConfigHandler
 
     public static void saveToFile()
     {
-        Path dir = FileUtils.getConfigDirectoryAsPath();
+        Path dir = FileUtils.getConfigDirectory();
         if (!FileUtils.createDirectoriesIfMissing(dir)) {
             return;
         }
@@ -50,9 +49,7 @@ public class Configs implements IConfigHandler
         ConfigUtils.writeConfigBase(root, "Generic", Generic.OPTIONS);
         ConfigUtils.writeConfigBase(root, "Hotkeys", Hotkeys.HOTKEY_LIST);
 
-        // If you have a Path version, prefer it:
-        // JsonUtils.writeJsonToFileAsPath(root, configFile);
-        JsonUtils.writeJsonToFile(root, configFile.toFile());
+        JsonUtils.writeJsonToFile(root, configFile);
     }
 
 

@@ -6,7 +6,7 @@ import com.hekker.firesight.event.KeyCallbacks;
 import fi.dy.masa.malilib.event.InputEventHandler;
 import fi.dy.masa.malilib.interfaces.IInitializationHandler;
 import fi.dy.masa.malilib.config.ConfigManager;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 public class InitHandler implements IInitializationHandler {
     public void registerModHandlers() {
@@ -15,6 +15,6 @@ public class InitHandler implements IInitializationHandler {
         InputEventHandler.getKeybindManager().registerKeybindProvider(InputHandler.getInstance());
         InputEventHandler.getInputManager().registerKeyboardInputHandler(InputHandler.getInstance());
         InputEventHandler.getInputManager().registerMouseInputHandler(InputHandler.getInstance());
-        KeyCallbacks.init(MinecraftClient.getInstance());
+        KeyCallbacks.init(Minecraft.getInstance());
     }
 }

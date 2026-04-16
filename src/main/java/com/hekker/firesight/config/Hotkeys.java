@@ -15,10 +15,10 @@ public class Hotkeys
 
     static
     {
-        RENDERING_TOGGLE = (ConfigHotkey) new ConfigHotkey("renderingToggle", "F8")
+        RENDERING_TOGGLE = new ConfigHotkey("renderingToggle", "F8")
                 .apply(HOTKEYS_KEY);
 
-        OPEN_CONFIG_GUI = (ConfigHotkey) new ConfigHotkey("openConfigGui", "M,F8")
+        OPEN_CONFIG_GUI = new ConfigHotkey("openConfigGui", "M,F8")
                 .apply(HOTKEYS_KEY);
 
         HOTKEY_LIST = ImmutableList.of(
