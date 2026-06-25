@@ -10,7 +10,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.chunk.ChunkSectionsToRender;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -53,7 +52,7 @@ public class WorldRendererMixin {
         }
     }
 
-    @Inject(method = "renderLevel", at = @At("TAIL"))
+    @Inject(method = "render", at = @At("TAIL"))
     private void firesight$afterRender(
             GraphicsResourceAllocator allocator,
             DeltaTracker tickCounter,
@@ -63,7 +62,6 @@ public class WorldRendererMixin {
             GpuBufferSlice fog,
             Vector4f fogColor,
             boolean shouldRenderSky,
-            ChunkSectionsToRender chunkSectionsToRender,
             CallbackInfo ci
     ) {
         if (!Configs.Generic.FIRESIGHT_RENDERING.getBooleanValue()) return;

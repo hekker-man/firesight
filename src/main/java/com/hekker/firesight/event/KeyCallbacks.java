@@ -15,7 +15,7 @@ public class KeyCallbacks
 
         Hotkeys.OPEN_CONFIG_GUI.getKeybind()
                 .setCallback((action, key) -> {
-                    mc.setScreen(new GuiConfigsFiresight());
+                    mc.setScreenAndShow(new GuiConfigsFiresight());
                     return true;
                 });
     }

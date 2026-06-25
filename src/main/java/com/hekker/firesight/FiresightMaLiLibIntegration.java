@@ -18,7 +18,8 @@ public class FiresightMaLiLibIntegration {
         try {
             ctx = new RenderContext(
                     () -> "firesight:overlay/fill",
-                    MaLiLibPipelines.POSITION_COLOR_TRANSLUCENT_NO_DEPTH_NO_CULL);
+                    MaLiLibPipelines.POSITION_COLOR_TRANSLUCENT_NO_DEPTH_NO_CULL,
+                    0);
 
             BufferBuilder buffer = ctx.getBuilder();
 
